@@ -1,3 +1,4 @@
 {
-  "python.pythonPath": "C:\\Users\\tklinkenberg\\.conda\\envs\\env_full\\python.exe"
+  "python.pythonPath": "C:\\Users\\Trevor\\.conda\\envs\\ML\\python.exe",
+  "git.ignoreLimitWarning": true
 }
