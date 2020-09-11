@@ -16,7 +16,7 @@ for image in glob.glob("NWPU-RESISC45/airplane" + "/*.jpg"):
 	#Import image and Convert to RGB
 	fileName = image[image.rfind("\\")+ 1:]
 	image = cv2.imread(image)
-	index[fileName] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+	images[fileName] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 	# Display original image
 	# plt.imshow(image)
 	#### Question 1 a: compute HSV kmeans model of K=64 //DONE
@@ -41,6 +41,7 @@ for image in glob.glob("NWPU-RESISC45/airplane" + "/*.jpg"):
 	#plt.plot(hist)
 	#plt.show()
 	print(fileName)
+	
 #### Question 1 c: use Euclidean and KL distance to measure similarity
 	# //TODO
 	# initialize the results dictionary
@@ -80,7 +81,7 @@ for (k, hist) in index.items():
 	d = special.kl_div(index["airplane_001.jpg"], hist)
 	resultsKL[k] = d
 # sort the results
-resultsKL = sorted([(v, k) for (k, v) in resultsKL.items()])
+# resultsKL = sorted([(v, k) for (k, v) in resultsKL.items()])
 # show the query image
 fig = plt.figure("Query")
 ax = fig.add_subplot(1, 1, 1)
