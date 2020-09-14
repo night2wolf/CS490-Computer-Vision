@@ -8,10 +8,14 @@ from sklearn.cluster import KMeans
 from scipy.spatial import distance as dist
 from scipy import special
 import glob
+import random
 
-# Gather 100 images from first 15 classes (total of 1500 images)
+# Gather 100 images from first 15 classes (total of 1500 images) -Pre cut dataset
 index = {}
 images = {}
+classes_array = ["airplane","airport","baseball_diamond","basketball_court","beach","bridge",
+"chaparral","church","circular_farmland","cloud","commercial_area","dense_residential","desert",
+"forest","freeway"]
 for image in glob.glob("NWPU-RESISC45/airplane" + "/*.jpg"):
 	#Import image and Convert to RGB
 	fileName = image[image.rfind("\\")+ 1:]
@@ -31,8 +35,6 @@ for image in glob.glob("NWPU-RESISC45/airplane" + "/*.jpg"):
 	#plt.axis("off")
 	#plt.imshow(bar)
 	#plt.show()
-
-
 	features = []
 	hist = cv2.calcHist(image, [0, 1, 2], None, [8, 4, 4],
   	[0, 256, 0, 256, 0, 256])
@@ -45,22 +47,28 @@ for image in glob.glob("NWPU-RESISC45/airplane" + "/*.jpg"):
 	print(fileName)
 	
 #### Question 1 c: use Euclidean distance to measure similarity	
-	# initialize the results dictionary
-	resultsE = {}
-		# loop over the index
+# initialize the results dictionary
+# Random integer to pick random image in dataset, prepend 0's for filename
+imgrand = random.randrange(1,20)
+resultsE = {}
+imgrand = '{:03d}'.format(imgrand)
+classes_array_rand = random.choice(classes_array)
+# loop over the index
+print("{}_{}.jpg".format(classes_array_rand,imgrand))	
 for (k, hist) in index.items():
 	# compute the distance between the two histograms
 	# using the method and update the results dictionary
 	# // TODO - This needs to be a random image out of the dataset
 	d = dist.euclidean(index["airplane_001.jpg"], hist)
+	#d = dist.euclidean(index["{}_{}.jpg".format(classes_array_rand,imgrand)], hist)
 	resultsE[k] = d
 # sort the results
 resultsE = sorted([(v, k) for (k, v) in resultsE.items()])
 # show the query image
 fig = plt.figure("Query")
 ax = fig.add_subplot(1, 1, 1)
-# // TODO : some random image here
 ax.imshow(images["airplane_001.jpg"])
+#ax.imshow(images["{}_{}.jpg".format(classes_array_rand,imgrand)])
 plt.axis("off")
 # initialize the results figure
 fig = plt.figure("Results: %s" % ("Euclidean"))
@@ -74,22 +82,30 @@ for (i, (v, k)) in enumerate(resultsE):
 	plt.axis("off")
 # show the Euclidean method
 #plt.show()
-## //TODO Print Results, Use to plot confusion matrix.
-#for x in range(len(resultsE)): 
-    #print(resultsE[x]) 
+prediction = []
+for x in range(len(resultsE)): 
+    print(resultsE[x])
 #for key, value in images.items():
     #print(key, ' : ', value)
 indexvalues = []	
 #for key, value in index.items():
 	#print(key, ' : ', value)
-
-
+def Extract(lst): 
+   return [item[0] for item in lst]
+print(Extract(resultsE))
+print("index values")
+#print(index.values())
 
 ##### Question 1 d: pick 400 random image and compute 1 nearest neighbor
 #prediction from hist distance and plot confusion map
 # //TODO : Create 15x15 confusion matrix of all classes.
 from sklearn import metrics
-actual = images.get("airplane_003.jpg")
-prediction = images.get("airplane_023.jpg")
-metrics.confusion_matrix(actual,prediction)
-metrics.classification_report(actual,prediction)
+# actual = list(images.values())
+act_array = np.array(resultsE)
+pred = list(images.values())
+pred_array = np.array(pred)
+label_array = np.array(classes_array)
+#act = actual.reshape(actual, (actual.shape[0],20))
+#pred = prediction.reshape(prediction, (prediction.shape[0],20))
+metrics.confusion_matrix(act_array,pred_array)
+metrics.classification_report(act_array,pred_array)
