@@ -16,7 +16,7 @@ images = {}
 classes_array = ["airplane","airport","baseball_diamond","basketball_court","beach","bridge",
 "chaparral","church","circular_farmland","cloud","commercial_area","dense_residential","desert",
 "forest","freeway"]
-for image in glob.glob("NWPU-RESISC45/airplane" + "/*.jpg"):
+for image in glob.glob("NWPU-RESISC45" + "/*/*.jpg"):
 	#Import image and Convert to RGB
 	fileName = image[image.rfind("\\")+ 1:]
 	image = cv2.imread(image)
@@ -59,16 +59,16 @@ for (k, hist) in index.items():
 	# compute the distance between the two histograms
 	# using the method and update the results dictionary
 	# // TODO - This needs to be a random image out of the dataset
-	d = dist.euclidean(index["airplane_001.jpg"], hist)
-	#d = dist.euclidean(index["{}_{}.jpg".format(classes_array_rand,imgrand)], hist)
+	#d = dist.euclidean(index["airplane_001.jpg"], hist)
+	d = dist.euclidean(index["{}_{}.jpg".format(classes_array_rand,imgrand)], hist)
 	resultsE[k] = d
 # sort the results
 resultsE = sorted([(v, k) for (k, v) in resultsE.items()])
 # show the query image
 fig = plt.figure("Query")
 ax = fig.add_subplot(1, 1, 1)
-ax.imshow(images["airplane_001.jpg"])
-#ax.imshow(images["{}_{}.jpg".format(classes_array_rand,imgrand)])
+#ax.imshow(images["airplane_001.jpg"])
+ax.imshow(images["{}_{}.jpg".format(classes_array_rand,imgrand)])
 plt.axis("off")
 # initialize the results figure
 fig = plt.figure("Results: %s" % ("Euclidean"))
