@@ -102,7 +102,7 @@ print("index values")
 from sklearn import metrics
 # actual = list(images.values())
 act_array = np.array(resultsE)
-pred = list(images.values())
+pred = list(index.values())
 pred_array = np.array(pred)
 label_array = np.array(classes_array)
 #act = actual.reshape(actual, (actual.shape[0],20))
