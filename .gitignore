@@ -1,6 +1,6 @@
 # Dataset directories
 # CS490HW1/NWPU-RESISC45/ - needed for submission
-
+CS490HW2/MPEG.CDVS/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
