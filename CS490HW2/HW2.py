@@ -9,11 +9,14 @@ https://github.com/Lithogenous/VLAD-SIFT-python/blob/master/vlad_raw.py
 https://gist.github.com/danoneata/9927923 
 https://github.com/menpo/cyvlfeat/blob/master/cyvlfeat/sift/dsift.py
 https://github.com/menpo/cyvlfeat/blob/master/cyvlfeat/sift/sift.py 
+https://github.com/Vectorized/Python-KD-Tree/blob/master/kdtree.py
 """
-import cyvlfeat as vlfeat
+from cyvlfeat import vlad,fisher,kmeans,sift
 import cv2
 import sklearn
-
+import HW2helpers
+import scipy
+import numpy as np
 #Q1
 """
 Compute Image Features, create a matlab/python function that compute n x d features by calling
@@ -26,14 +29,17 @@ implementing the following function:
 # NOTE - im must be A single channel, greyscale, `float32` numpy array (ndarray)
 #  representing the image to calculate descriptors for for sift and dsift
 def getImageFeatures(im, opt):
-    im =cv2.IMREAD_GRAYSCALE(im)
-    if opt == "dsft":
-        feature = vlfeat.dsift(im)
-    if opt == "sift":
-        feature = vlfeat.sift(im)
+    
+    im =cv2.imread(im)    
+    img_gray= cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    if opt == "dsift" or opt == "sift":
+        if opt == "dsift":
+            features = sift.dsift(img_gray)
+        if opt == "sift":
+            features = sift.sift(img_gray)
     else:
         print("only supports dsift and sift -- ERROR")
-    return feature
+    return features
 
 
 # Q2
@@ -50,11 +56,12 @@ implementing the following functions:
 # vlad_km - VLAD kmeans model
 # A - PCA projection for dimension reduction
 def getVladModel(f, kd, k):    
-#PCA dimension reduction of the feature    
-    [A,s,lat]=princomp(f); 
-    # f0 = f*A(:,1:kd)
-    # this is the feature with desired d-dimensions
-    return
+    centers = kmeans.kmeans(f,k)
+    print(centers)
+    kdtree = scipy.spatial.KDTree(centers)    
+    #knn = scipy.spatial.KDTree.query(kdtree,1)
+    vlad_km = vlad.vlad(f,centers,kdtree)        
+    return vlad_km
 """  -- Do the same for Fisher Vector model """
 # f - n x d matrix containing n features from say 100 images. 
 # k - number of GMM components 
@@ -63,9 +70,8 @@ def getVladModel(f, kd, k):
 #         fv_gmm.m - mean, fv_gmm.cov - variance, fv_gmm.p - prior
 # A - PCA for dimension reduction
 def getFisherVectorModel(f, kd, k):
-    [A,s,lat]=princomp(f); 
-    # f0 = f*A(:,1:kd); % this is the feature with desired d-dimensions
-    return
+    fisher_km = fisher.fisher()
+    return fisher_km
 
 
 #Q3
@@ -103,5 +109,13 @@ you only need to plot the last row for 10 feature-aggregation combinations.
 """    
 kd = [24,48]
 nc = [32,64,96]
-
-
+im = "MPEG.CDVS\cdvs_thumbnails\cdvs-11.jpg"
+frames = getImageFeatures(im,opt="sift")
+print(frames)
+#vlad_km = getVladModel(frames,kd,10)
+#print(vlad_km)
+frames,descriptor = getImageFeatures(im,opt="dsift")
+print(frames)
+print(descriptor)
+vlad_km = getVladModel(frames,kd,1)
+print(vlad_km)
