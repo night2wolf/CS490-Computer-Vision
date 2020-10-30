@@ -12,7 +12,9 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import kneighbors_graph
 from sklearn.cluster import KMeans
-
+from sklearn.manifold import SpectralEmbedding
+from sklearn.cluster import AgglomerativeClustering
+import HW3helper
 # Sources:
 #https://towardsdatascience.com/how-to-load-matlab-mat-files-in-python-1f200e1287b5
 #https://towardsdatascience.com/eigenfaces-face-classification-in-python-7b8d2af3d3ea
@@ -52,7 +54,6 @@ Y = df['face_ID']
 # plot_faces(X)
 # Split into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, Y)
-"""
 # now do PCA Eigenfaces
 pca = PCA().fit(X_train)
 plt.figure(figsize=(18, 7))
@@ -75,5 +76,17 @@ X_test_lda = lda.transform(X_test)
 classifier = SVC().fit(X_train_lda, y_train)
 predictions = classifier.predict(X_test_lda)
 print(classification_report(y_test, predictions))
-"""
 # Now Laplacian Face
+# According to documentation : Note : Laplacian Eigenmaps is the actual algorithm implemented here.
+lpp = SpectralEmbedding(n_components=133)
+model = lpp.fit_transform(X_train)
+fig = plt.figure(figsize=(15, 8))
+ax = fig.add_subplot(133, projection='3d')
+ax.scatter(model[:, 0], model[:, 1], model[:, 2],cmap=plt.cm.Spectral)
+ax.view_init(4, -72)
+ax.set_title("Spectral Embedding")
+from matplotlib.ticker import NullFormatter
+ax.xaxis.set_major_formatter(NullFormatter())
+ax.yaxis.set_major_formatter(NullFormatter())
+ax.axis('tight')
+plt.show()
