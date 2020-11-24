@@ -126,3 +126,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+*.jpg
+CS490HW4/NWPU-RESISC45.zip
